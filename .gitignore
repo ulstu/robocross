@@ -1,0 +1,5 @@
+/tiles
+*.pyc
+*.log
+/.idea
+/.vscode
