@@ -63,3 +63,4 @@ publisher ROS topic "gpspos": текущая позиция автмобиля, 
 * При запуске C++ компонент может появиться ошибка "Couldn't find an AF_INET address for []". Для ее устранения нужно в ~/.bashrc прописать в конце 
 machine_ip=(`hostname -I`)
 export ROS_IP=${machine_ip[0]}
+=======
