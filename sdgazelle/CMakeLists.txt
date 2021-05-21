@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
-  INCLUDE_DIRS include
+	#  INCLUDE_DIRS include
   LIBRARIES sdgazelle
   CATKIN_DEPENDS roscpp rospy std_msgs
 )

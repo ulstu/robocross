@@ -8,6 +8,7 @@ import time
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
+
 class StereoRecognizer(object):
     control_pub = None
     cmd_pub = None
@@ -26,7 +27,7 @@ class StereoRecognizer(object):
         '''
         Начало движения
         '''
-        log(self, "start")
+        log(self, "visual start")
         self.publish_control(5, 0, 1)
         # запуск распознавания
     
@@ -34,7 +35,7 @@ class StereoRecognizer(object):
         '''
         Остановка алгоритма распознаания
         '''
-        log(self, "stop")
+        log(self, "visual stop")
         self.publish_control(0, 0, 0)
 
     def turn_car(self):
@@ -112,3 +113,8 @@ if __name__ == '__main__':
         ctrl.start()
     except rospy.ROSInterruptException:
         rospy.logerr('Ошибка car node: {}'.format(traceback.format_exc()))
+
+
+#roslaunch ouster_ros ouster.launch sensor_hostname:=10.3.23.82 \
+#                                   udp_dest:=10.3.23.48 \
+#                                   lidar_mode:=512x10 viz:=true

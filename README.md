@@ -1,4 +1,4 @@
-# robocross2019
+# robocross2021
 Папка sdgazelle - ROS package для управления автомобилем. Для запуска необходимо или скопировать папку sdgazelle в ~/catkin_ws/src или создать символическую ссылку командой "sudo ln -s /mnt/d/repositories/science/robocross_2019/sdgazelle/ ~/catkin_ws/src/sdgazelle" (нужно прописать правильно пути, первая папка - что, вторая - куда).
 
 # Обобщенная архитектура системы

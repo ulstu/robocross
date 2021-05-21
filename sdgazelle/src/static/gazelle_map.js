@@ -26,7 +26,7 @@ save_point_type = function(lat, lon, point){
 }
 
 draw_path = function() {
-    $.getJSON('/getpath', function (data) {
+    $.getJSON('/getpointTypeDialogpath', function (data) {
         var points = new Array();
         var fromProjection = new OpenLayers.Projection("EPSG:4326");
         var toProjection   = new OpenLayers.Projection("EPSG:900913");

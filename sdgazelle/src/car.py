@@ -105,9 +105,13 @@ class Car(object):
                         pass
 
             #log(self, self.cur_cmd[CarCmdParams.transmission] if CarCmdParams.transmission in self.cur_cmd else -100)
-            if (CarCmdParams.transmission in self.cur_cmd) and self.cur_cmd[CarCmdParams.transmission] != self.actual_params[CarCmdParams.transmission]:
-                log(self, "Переключение передачи с {} на {}".format(self.actual_params[CarCmdParams.transmission], self.cur_cmd[CarCmdParams.transmission]))
-                # смена передачи
+            if (CarCmdParams.transmission in self.cur_cmd):
+                self.cur_cmd[CarCmdParams.transmission] = int(self.cur_cmd[CarCmdParams.transmission])
+                self.actual_params[CarCmdParams.transmission] = int(self.actual_params[CarCmdParams.transmission])
+                if self.cur_cmd[CarCmdParams.transmission] != self.actual_params[CarCmdParams.transmission]:
+                    log(self, "Переключение передачи с {} на {}".format(self.actual_params[CarCmdParams.transmission], self.cur_cmd[CarCmdParams.transmission]))
+                    self.actual_params[CarCmdParams.transmission] = self.cur_cmd[CarCmdParams.transmission]
+                    # смена передачи
 
             # установка скорости 
             if (CarCmdParams.velocity in self.cur_cmd) and self.cur_cmd[CarCmdParams.velocity] != 0:

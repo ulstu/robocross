@@ -24,7 +24,7 @@ def save_init_data(count):
 
 def load_gps_data():
     rospy.loginfo("starting GPS loading data")
-    with open(gps_init_filename, 'rU') as f:
+    with open(gps_init_filename, 'r') as f:
         return list([float(rec[0]), float(rec[1])] for rec in csv.reader(f, delimiter=','))
 
 def live_plotter_xy(x_vec, y1_data, y2_data, line1, line2, identifier='', pause_time=0.01):
@@ -112,7 +112,7 @@ if __name__ == '__main__':
         #save_init_data(5)
         rospy.loginfo("GPS kalman filtering initialization finished")
         rospy.loginfo("GPS kalman filtering started")
-        pub = rospy.Publisher('gpspos', String, queue_size=10)
+        gps_pos_publisher = rospy.Publisher('gpspos', String, queue_size=10)
 
         # uncomment for real GPS data
         if (not bool(rospy.get_param("~simulation"))):
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         else:
             rospy.loginfo("starting GPS simulation")
             points = []
-            with open(rospy.get_param('~osm.gpssimulation'), 'rU') as f:
+            with open(rospy.get_param('~osm.gpssimulation'), 'r') as f:
                 for rec in csv.reader(f, delimiter=','):
                     points.append([rec[0], rec[1], rec[2]])
             
@@ -133,7 +133,7 @@ if __name__ == '__main__':
                     lon = points[i][1]
                     velocity = 0.006
                     rospy.loginfo("lat: {}; lon: {}; klat: {}; klon: {}; velocity: {}".format(lat, lon, lat, lon, velocity))
-                    pub.publish("lat: {}; lon: {}; klat: {}; klon: {}; velocity: {}".format(lat, lon, lat, lon, velocity))
+                    gps_pos_publisher.publish("lat: {}; lon: {}; klat: {}; klon: {}; velocity: {}".format(lat, lon, lat, lon, velocity))
                     rospy.sleep(float(rospy.get_param("~simulationdelay")))
                 i += 1
 

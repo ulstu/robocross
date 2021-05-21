@@ -60,7 +60,7 @@ class MapServer(object):
 
     @cherrypy.expose
     def index(self):
-        return "Hello, world"
+        raise cherrypy.HTTPRedirect("/static/local_tiles.htm")
 
     @cherrypy.expose
     def gettile(self, zoom, x, y):
@@ -76,7 +76,7 @@ class MapServer(object):
 
     @cherrypy.expose
     def getpath(self):
-        with open(rospy.get_param('~osm.gpspath'), 'rU') as f:
+        with open(rospy.get_param('~osm.gpspath'), 'r') as f:
             return json.dumps({"points":list({"lat": float(rec[0]), "lon": float(rec[1]), "ptype": rec[2]} for rec in csv.reader(f, delimiter=','))})
 
     @cherrypy.expose
@@ -97,7 +97,7 @@ class MapServer(object):
     def setpoint(self, lat, lon, ptype):
         try:
             points = []
-            with open(rospy.get_param('~osm.gpspath'), 'rU') as f:
+            with open(rospy.get_param('~osm.gpspath'), 'r') as f:
                 for rec in csv.reader(f, delimiter=','):
                     points.append([rec[0], rec[1], rec[2]])
 

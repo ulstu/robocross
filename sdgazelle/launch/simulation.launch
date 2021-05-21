@@ -1,13 +1,14 @@
 <launch>
     <arg name="osm.tiles.dir" default="/media/nvidia/data/repositories/tiles" />
-    <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_sim.csv" />
-    <arg name="osm.gpssimulation" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gps_dummy_pos.csv" />
+    <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_real.csv" />
+<!--    <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_sim.csv" />-->
+    <arg name="osm.gpssimulation" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gps_dummy_pos_orenburg.csv" />
     <arg name="osm.gpsvals" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpsvals.csv" />
-    <arg name="simulation" default="False" />
+    <arg name="simulation" default="True" />
     <arg name="usekalman" default="False" />
 
-    <node pkg="sdgazelle" name="gpsnode" type="gpsnode.py" output="screen">
-        <param name="gpsport" value="/dev/ttyACM0" />
+    <node pkg="sdgazelle" name="gpsnode" type="gpsnode.py" output="log">
+        <param name="gpsport" value="/dev/ttyS11" />
         <param name="baudrate" value="9600" />
         <param name="gpsvals" value="$(arg osm.gpsvals)" />
         <param name="need_display" value="False" />
@@ -16,6 +17,7 @@
         <param name="simulationdelay" value="0.5" />
         <param name="usekalman" value="$(arg usekalman)" />
     </node>
+
     <node pkg="sdgazelle" name="webdisplaynode" type="webdisplaynode.py" output="log">
         <param name="server.socket_port" value="8800" />
         <param name="server.socket_host" value="0.0.0.0"/>
@@ -38,9 +40,8 @@
         <param name="loadobd" value="False" />
     </node>
     <node pkg="sdgazelle" name="stereorecognizer" type="stereorecognizer.py" output="screen">
-    </node>
-<!--    <node pkg="sdgazelle" name="visualrecognizer" type="visualrecognizer.py" output="screen">
+    </node> 
+ <!--   <node pkg="sdgazelle" name="visualrecognizer" type="visualrecognizer.py" output="screen">
     </node>
 -->
-    <include file="$(find ouster_ros)/os1_obst.launch" />
 </launch>

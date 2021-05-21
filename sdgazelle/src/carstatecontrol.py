@@ -135,6 +135,7 @@ class CarPositionController(object):
             datastr = "state:{}; mpindx: {}; tpindx: {}; full: {}; after_start: {}; before_turn: {}; after_turn: {}; before_stop: {}".format(self.cur_state, min_point_index, self.turn_point_index, self.dist_full, self.dist_after_start, self.dist_before_turn, self.dist_after_turn, self.dist_before_stop)
             #log(self, datastr)
             self.distpub.publish(datastr)
+            self.distpub.publish(datastr)
         except:
             rospy.logerr('Ошибка calc_distances: {}'.format(traceback.format_exc()))
 
@@ -150,6 +151,7 @@ class CarPositionController(object):
             prev_turn_dist = 1000000
             while not rospy.is_shutdown():
                 self.calc_distances()
+                #rospy.loginfo("prev_turn_dist {} dist_before_turn {}".format(prev_turn_dist, self.dist_before_turn));
                 if ((prev_turn_dist < self.dist_before_turn) and (prev_turn_dist < 10)) or self.dist_before_turn < 1:
                     self.cur_state = CarState.TURN
                     break
@@ -218,8 +220,11 @@ class CarPositionController(object):
         Завершение выполнения задания
         '''
         self.publish_state("finish")
+        logged = False
         while not rospy.is_shutdown():
-            log(self, "Автомобиль завершил выполнение задания")
+            if not logged:
+                log(self, "Автомобиль завершил выполнение задания")
+                logged = True
             rospy.sleep(1)
 
     def control_state(self):
@@ -246,7 +251,7 @@ class CarPositionController(object):
             rospy.sleep(0.1)
 
     def load_data(self):
-        with open(rospy.get_param('~osm.gpspath'), 'rU') as f:
+        with open(rospy.get_param('~osm.gpspath'), 'r') as f:
             k = 0
             for rec in csv.reader(f, delimiter=','):
                 self.points.append([rec[0], rec[1], rec[2]])
