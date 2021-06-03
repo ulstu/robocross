@@ -6,7 +6,7 @@ const int SPI_CS_PIN = 5;
 
 MCP_CAN CAN(SPI_CS_PIN);           // Set CS pin
 
-unsigned char len = 0;             // Никуомуненужые переменные
+unsigned char len = 0;             // Нужые переменные
 unsigned char buf[8];
 int currentAngle = 360 * 2.5;
 int wheelOffset;
