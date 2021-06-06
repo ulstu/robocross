@@ -82,15 +82,6 @@ void loop() {
         }
 
         wheel.setPWM(int(((RC_receiver::eur_value - 994) / 1000.0) * 195 + 30));
-        /*if (RC_receiver::eur_value < 1250) {
-            eur.turn(-85);
-        }
-        else if (RC_receiver::eur_value < 1750) {
-            eur.turn(0);
-        }
-        else {
-            eur.turn(85);
-        }*/
 
         if (RC_receiver::gear_value > 1750) {
             gear_num = 1;
