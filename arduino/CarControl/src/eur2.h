@@ -47,9 +47,10 @@ class Wheel {
         }
       }
       Serial.println("CAN get angle timeout!!!");
+      return 0;
     }
 
-    init() {
+    void init() {
       while (CAN_OK != CAN.begin(CAN_500KBPS)) {            // init can bus : baudrate = 500k
           Serial.println("CAN BUS Shield init fail");
           Serial.println("Init CAN BUS Shield again");
