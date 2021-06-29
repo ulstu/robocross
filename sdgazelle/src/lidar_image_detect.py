@@ -7,21 +7,22 @@ import numpy as np
 import cv2
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
+#from cv_bridge import CvBridge, CvBridgeError
 
 
 class ObstacleDetector:
     def __init__(self):
         self.image_pub = rospy.Publisher("image_topic_2", Image, queue_size=5)
-        self.bridge = CvBridge()
+        #self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/img_node/intensity_image", Image, self.image_callback)
         self.pos_history = []
 
     def image_callback(self, data):
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            cv_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
+            #cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
             #rospy.loginfo(f'image received {cv_image.shape}')
-        except CvBridgeError as e:
+        except Exception as e:
             print(e)
 
         (rows, cols, channels) = cv_image.shape

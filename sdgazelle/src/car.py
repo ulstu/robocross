@@ -162,7 +162,7 @@ class Car(object):
 
     def cmd_callback(self, data):
         '''
-        Callback для получения сигнала управления автомобилем
+        Callback для получения сигнала управления автомобилем (abstract commands: stop, move forward, turn, stop)
         '''
         data = str(data).replace("data:", "")
         vars = str(data).split(';')
@@ -186,7 +186,7 @@ class Car(object):
 
     def control_callback(self, data):
         '''
-        Callback для получения сигнала управления автомобилем
+        Callback для получения сигнала управления автомобилем (car messages: transmission, velocity, throttle etc)
         '''
         data = str(data).replace("data:", "")
         vars = str(data).split(';')
@@ -212,7 +212,6 @@ class Car(object):
             wr.writerows(self.hist_cmd)
 
     def __init__(self):
-
         if (not rospy.get_param("~simulation")) and rospy.get_param("~loadobd"):
             log(self, "connecting to OBD: {}".format(rospy.get_param("~obdport")))
             obd.logger.setLevel(obd.logging.DEBUG)

@@ -26,7 +26,7 @@ save_point_type = function(lat, lon, point){
 }
 
 draw_path = function() {
-    $.getJSON('/getpointTypeDialogpath', function (data) {
+    $.getJSON('/getpath', function (data) {
         var points = new Array();
         var fromProjection = new OpenLayers.Projection("EPSG:4326");
         var toProjection   = new OpenLayers.Projection("EPSG:900913");
@@ -165,7 +165,8 @@ init = function () {
     var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "/gettile?zoom=${z}&x=${x}&y=${y}", {
         numZoomLevels: 22,
         alpha: true,
-        isBaseLayer: false
+        isBaseLayer: false, 
+        crossOrigin: null
     });
     map.addLayer(newLayer);
 

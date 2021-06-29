@@ -8,7 +8,7 @@
   <arg name="filtered_obstacles_topic"    default="filtered_obstacles"/>
   <arg name="filtered_ground_plane_topic" default="filtered_ground_plane"/>
   
-  <node pkg="obstacle_detection" type="lidar_image_detect.py" name="image_obstacle_detection" output="screen">
+  <node pkg="sdgazelle" type="lidar_image_detect.py" name="image_obstacle_detection" output="screen">
   </node>
   <node pkg="obstacle_detection" type="obstacle_detection" name="obstacle_detection" output="screen">
     <param name="downsample_leaf_size" type="double" value="$(arg downsample_leaf_size)"/>

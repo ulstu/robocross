@@ -1,8 +1,8 @@
 <launch>
     <arg name="osm.tiles.dir" default="/media/psf/Home/repositories/robocross_files/tiles/" />
     <arg name="osm.gpspath" default="/home/hiber/catkin_ws/src/sdgazelle/src/data/gpspath_real.csv" />
-<!--    <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_sim.csv" />-->
-    <arg name="osm.gpssimulation" default="/home/hiber/catkin_ws/src/sdgazelle/src/data/gps_dummy_pos_orenburg.csv" />
+	<!--    <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_sim.csv" />-->
+    <arg name="osm.gpssimulation" default="/home/hiber/catkin_ws/src/sdgazelle/src/data/gps_dummy_pos.csv" />
     <arg name="osm.gpsvals" default="/home/hiber/catkin_ws/src/sdgazelle/src/data/gpsvals.csv" />
     <arg name="simulation" default="True" />
     <arg name="usekalman" default="False" />

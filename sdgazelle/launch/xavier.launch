@@ -1,6 +1,7 @@
 <launch>
     <arg name="osm.tiles.dir" default="/media/nvidia/data/repositories/tiles" />
     <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_sim.csv" />
+    <!--    <arg name="osm.gpspath" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpspath_sim.csv" />-->
     <arg name="osm.gpssimulation" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gps_dummy_pos.csv" />
     <arg name="osm.gpsvals" default="/home/nvidia/catkin_ws/src/sdgazelle/src/data/gpsvals.csv" />
     <arg name="simulation" default="False" />
