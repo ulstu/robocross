@@ -1,0 +1,6 @@
+<launch>
+    <node name="playbag" pkg="rosbag" type="play"
+      args="--clock /media/psf/Home/repositories/robocross_files/bags/frwd.bag" />
+    <node name="rviz_map" pkg="rviz" type="rviz" args="-d $(find ouster_ros)/viz.rviz" />
+    <include file="$(find obstacle_detection)/launch/obstacle_detection.launch" />
+</launch>
