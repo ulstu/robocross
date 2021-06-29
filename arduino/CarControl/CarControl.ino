@@ -1,4 +1,4 @@
-#include "src/eur.h"
+#include "src/eur2.h"
 #include "src/gearbox.h"
 #include "src/Engine.h"
 #include "src/GearboxMotor.h"
@@ -13,7 +13,8 @@ GearboxMotor motor_gearbox_y(motor_y, 36, 31, 35);
 Gearbox gearbox = Gearbox(motor_gearbox_x, motor_gearbox_y);
 int gear_num = 0;
 
-Eur eur(27, 6, 8, 11, 49, 48);
+Wheel wheel;
+//Eur eur(27, 6, 8, 11, 49, 48);
 
 Engine engine(26, 25, 24);
 
@@ -25,6 +26,8 @@ PedalMotor brake_motor(44, 45, 53, 52, LOW, HIGH, false);
 void setup() {
     pinMode(43, INPUT_PULLUP);
     Serial.begin(115200);
+
+    wheel.init(); // Инициализация руля
     
     int pins[] = { 2, 3, 18, 19, 20, 21 };
     RC_receiver::Setup(pins);
@@ -72,21 +75,13 @@ void loop() {
         else {
             if (state == 0) {
                 Serial.println("launch engine");
-                eur.reboot();
+                //eur.reboot();
                 engine.launch();
                 state = 1;
             }
         }
 
-        if (RC_receiver::eur_value < 1250) {
-            eur.turn(-85);
-        }
-        else if (RC_receiver::eur_value < 1750) {
-            eur.turn(0);
-        }
-        else {
-            eur.turn(85);
-        }
+        wheel.setPWM(int(((RC_receiver::eur_value - 994) / 1000.0) * 195 + 30));
 
         if (RC_receiver::gear_value > 1750) {
             gear_num = 1;
@@ -105,7 +100,7 @@ void loop() {
         brake_motor.push(100);
         clutch_motor.push(100);
     }
-    eur.check_lim();
+    //eur.check_lim();
     clutch_motor.update();
     brake_motor.update();
     gearbox.set_gear(gear_num);

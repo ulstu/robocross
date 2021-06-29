@@ -34,12 +34,12 @@ public:
     }
 
     int update() {
-        Position current_position = get_position();
+        GearboxMotor::Position current_position = get_position();
         //остановка движка в крайних положениях
-        if (get_position() == Position::up && direction == (inverse_direction? 0 : 1)) {
+        if (get_position() == GearboxMotor::Position::up && direction == (inverse_direction? 0 : 1)) {
             analogWrite(pin, 0);
         }
-        else if (get_position() == Position::down && direction == (inverse_direction? 1 : 0)) {
+        else if (get_position() == GearboxMotor::Position::down && direction == (inverse_direction? 1 : 0)) {
             analogWrite(pin, 0);
         }
         else {
@@ -50,15 +50,15 @@ public:
         return current_confirmed_position;
     }
 
-    Position get_position() {
+    GearboxMotor::Position get_position() {
         if (digitalRead(lim_up) == up_state) {
-            return Position::up;
+            return GearboxMotor::Position::up;
         }
         else if (digitalRead(lim_down) == down_state) {
-            return Position::down;
+            return GearboxMotor::Position::down;
         }
         else {
-            return Position::another;
+            return GearboxMotor::Position::middle;
         }
     }
 
@@ -67,7 +67,7 @@ private:
     int speed;
     int direction;
     int change_count;
-    Position current_confirmed_position;
+    GearboxMotor::Position current_confirmed_position;
     int lim_up, lim_down;
     int up_state, down_state;
     bool inverse_direction;
