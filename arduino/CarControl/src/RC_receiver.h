@@ -65,7 +65,7 @@ namespace RC_receiver {
 	}
 
 	bool Available() {
-		if (micros() - times[0] > 100000) {
+		if (micros() - times[0] > 300000) {
 			return false;
 		}
 		return true;

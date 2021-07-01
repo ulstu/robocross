@@ -38,10 +38,13 @@ public:
 
     void update() {
         int currentPosition = analogRead(analogPin);
-        int speed = 5 * abs(currentPosition - targetPosition);
+        int speed = 4 * abs(currentPosition - targetPosition);
         if (speed > 255) {
         	speed = 255;
         }
+        //else if (speed < 50) {
+        //    speed = 0;
+        //}
         if(currentPosition > targetPosition) {
     		digitalWrite(dirPin, inversed? 0 : 1);
         }
@@ -52,14 +55,10 @@ public:
         if (limitSwitch != NULL) {
         	if (!digitalRead(limitSwitch) && currentPosition < targetPosition) {
         		speed = 0;
-        		Serial.print("break stuck!");
-        		Serial.println(limitSwitch);
         	}
         }
-        else if (currentPosition < targetPosition) {
-        	if (currentPosition > (0.8 * targetPosition)) speed = 255;
-        	else if (currentPosition > (0.4 * targetPosition)) speed = 140;
-        	else speed = 255;
+        else if ((currentPosition > targetPosition) && (currentPosition < (0.83 * max))&&(currentPosition > (0.01 * max))) {
+        	speed *= 0.06;
         }
         //Serial.println(speed);
         //Serial.println(currentPosition);
@@ -67,7 +66,14 @@ public:
     }
 
     int getPosition() {
-    	return analogRead(analogPin);
+        int result = analogRead(analogPin) * (255.0 / max);
+        if (result > max) {
+            result = max;
+        }
+        else if (result < min) {
+            result = min;
+        }
+    	return result;
     }
 
     /*

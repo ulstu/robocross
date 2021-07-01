@@ -12,11 +12,12 @@ public:
     GearboxMotor::Position target_x, target_y;
 
     enum State {
-        ready, //ожидание (коробка находится в одной из скоростей и не переключает скорость)
-        run_x, //движение x
-        run_y, //движение y
-    }state;
+        ready = 0, //ожидание (коробка находится в одной из скоростей и не переключает скорость)
+        run_x = 1, //движение x
+        run_y = 2 //движение y
+    };
 
+    State state = State::ready;
     GearboxMotor motor_x, motor_y;
     unsigned long finish_time;
     const int finish_delay = 200;
@@ -26,6 +27,8 @@ public:
     }
 
     void set_gear(int target) {
+    	//Serial.println(target);
+
         if (state == State::ready) {
             if (target == 0) {
                 target_y = GearboxMotor::Position::middle;
@@ -59,33 +62,48 @@ public:
     }
 
     void update() {
+    	//Serial.println(".");
         if (state == State::ready) {
+        	//Serial.println("ready");
             //не совпадает х, у не в нейтралке
             //переводим на нейтралку
             if (motor_x.get_position() != target_x && motor_y.get_position() != GearboxMotor::Position::middle) {
                 motor_y.target_position = GearboxMotor::Position::middle;
                 state = State::run_y;
-                return;
             }
             //не совпадает х, у в нейтралке
             //переключаем по х
-            if (motor_x.get_position() != target_x && motor_y.get_position() == GearboxMotor::Position::middle) {
+            else if (motor_x.get_position() != target_x && motor_y.get_position() == GearboxMotor::Position::middle) {
                 motor_x.target_position = target_x;
                 state = State::run_x;
-                return;
             }
             //совпадает х, не совпадает у
             //переключаем по у
-            if (motor_x.get_position() == target_x && motor_y.get_position() != target_y) {
-                motor_y.target_position = GearboxMotor::Position::middle;
+            else if (motor_x.get_position() == target_x && motor_y.get_position() != target_y) {
+                motor_y.target_position = target_y;
                 state = State::run_y;
-                return;
-            }
-            //совпадают обе оси
-            if (motor_x.get_position() == target_x && motor_y.get_position() != target_y) {
-                state = State::ready;
             }
         }
+
+        //совпадают обе оси
+        if (state == State::run_y && motor_y.get_position() == motor_y.target_position) {
+        	state = State::ready;
+        }
+        else if (state == State::run_x && motor_x.get_position() == motor_x.target_position) {
+        	state = State::ready;
+        }
+        
+
+        /*Serial.print("x ");
+        Serial.print(motor_x.get_position());
+        Serial.print(" ");
+        Serial.println(motor_x.target_position);
+        Serial.println(motor_x.getpos());
+        Serial.print("y ");
+        Serial.print(motor_y.get_position());
+        Serial.print(" ");
+        Serial.println(motor_y.target_position);
+        Serial.println(motor_y.getpos());*/
 
         motor_x.update();
         motor_y.update();
