@@ -20,7 +20,10 @@ class Car(object):
         CarCmdParams.velocity: [0, 15],
         CarCmdParams.wheel: [-720, 720],
     }
-
+    
+    def update_angle(data):
+        rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+    
     def read_obd(self):
         '''
         Чтение данных о состонии автомобиля из OBD приемника
@@ -218,6 +221,7 @@ class Car(object):
             self.obd_connection = obd.OBD(rospy.get_param("~obdport"))  # auto-connects to USB or RF port
         rospy.Subscriber("carcmd", String, self.cmd_callback)
         rospy.Subscriber("carcontrol", String, self.control_callback)
+        rospy.Subscriber("angle", String, self.update_angle)
         self.statepub = rospy.Publisher('carstate', String, queue_size=10)
         self.init_car()
         self.start()
