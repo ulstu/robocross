@@ -20,7 +20,7 @@ source venv/bin/activate
 
 # Обобщенная архитектура системы
 ## ROS nodes:
-### webdisplay.py
+### webdisplaynode.py
 Отображение текущего состояния робота в web-среде cherrypy (http://localhost:8800/static):
 * Глобальная карта openstreetmap и положение на этой карте  (готово +-): subscribe ROS topic "gpspos"
 * Путь (начальная, конечная и промежуточные точки) (готово +-): список GPS координат из файла gpspath.csv

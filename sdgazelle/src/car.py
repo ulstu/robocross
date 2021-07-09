@@ -6,6 +6,14 @@ import traceback
 from utils import *
 import obd
 import csv
+import serial
+
+def get_code(code, value):
+    left_piece = ((code + 32) << 2) + ((value >> 14) & 3)
+    midle_piece = (value >> 7) & 127
+    right_piece = value & 127
+    print(str(left_piece)+ " " + str(midle_piece) + " " + str(right_piece))
+    return bytearray([left_piece, midle_piece, right_piece])
 
 class Car(object):
     hist_cmd = []
@@ -20,6 +28,11 @@ class Car(object):
         CarCmdParams.velocity: [0, 15],
         CarCmdParams.wheel: [-720, 720],
     }
+    
+
+    def update_angle(self, data):
+        rospy.loginfo(int(data.data))
+        Serial.write(get_code(16, int(data.data) * 3))
 
     def read_obd(self):
         '''
@@ -89,7 +102,7 @@ class Car(object):
         '''
         try:
             # передача управляющего воздействия на руль
-            if (CarCmdParams.wheel in self.actual_params) and (CarCmdParams.wheel in self.cur_cmd):
+            '''if (CarCmdParams.wheel in self.actual_params) and (CarCmdParams.wheel in self.cur_cmd):
                 if (self.cur_cmd[CarCmdParams.wheel] != 0):
                     while self.actual_params[CarCmdParams.wheel] < self.cur_cmd[CarCmdParams.wheel] and not rospy.get_param("~simulation"):
                         if self.actual_params[CarCmdParams.wheel] > self.check_params[CarCmdParams.wheel][1]:
@@ -102,7 +115,7 @@ class Car(object):
                             log(self, "Дальше вращать руль влево нельзя")
                             break
                         # вращение руля влево
-                        pass
+                        pass'''
 
             #log(self, self.cur_cmd[CarCmdParams.transmission] if CarCmdParams.transmission in self.cur_cmd else -100)
             if (CarCmdParams.transmission in self.cur_cmd):
@@ -162,7 +175,7 @@ class Car(object):
 
     def cmd_callback(self, data):
         '''
-        Callback для получения сигнала управления автомобилем (abstract commands: stop, move forward, turn, stop)
+        Callback для получения сигнала управления автомобилем (abstract commands )
         '''
         data = str(data).replace("data:", "")
         vars = str(data).split(';')
@@ -218,12 +231,14 @@ class Car(object):
             self.obd_connection = obd.OBD(rospy.get_param("~obdport"))  # auto-connects to USB or RF port
         rospy.Subscriber("carcmd", String, self.cmd_callback)
         rospy.Subscriber("carcontrol", String, self.control_callback)
+        rospy.Subscriber("angle", String, self.update_angle)
         self.statepub = rospy.Publisher('carstate', String, queue_size=10)
         self.init_car()
         self.start()
 
 if __name__ == '__main__':
     try:
+        Serial = serial.Serial(port='/dev/ttyUSB0', baudrate=115200)
         rospy.init_node('car', anonymous=True)
         ctrl = Car()
         ctrl.control()

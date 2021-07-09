@@ -12,6 +12,7 @@ from sensor_msgs.msg import Image
 
 class ObstacleDetector:
     def __init__(self):
+        self.angle_pub = rospy.Publisher("angle", String, queue_size=1)
         self.image_pub = rospy.Publisher("image_topic_2", Image, queue_size=5)
         #self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/img_node/intensity_image", Image, self.image_callback)
@@ -53,6 +54,7 @@ class ObstacleDetector:
         self.pos_history.append(imin)
         cv2.rectangle(cv_image, (imin, 0), (imin + window_size, rows), (0, 255, 0), 2)
         cv2.line(cv_image, (imin + 64, 0), (int(cols / 2), rows), (255, 0, 0), 4)
+        self.angle_pub.publish(str(int(np.arctan(((imin + 64 - cols / 2) / rows))  * 57)))
         cv2.imshow("Image window", cv_image)
         cv2.waitKey(3)
 

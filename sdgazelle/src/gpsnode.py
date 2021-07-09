@@ -87,7 +87,8 @@ def filter(measurements):
                                            observation=[float(gps.lat_dec), float(gps.lon_dec)]
                                            #,observation_covariance = 10 * kf3.observation_covariance
                                            )
-        if bool(rospy.get_param("~usekalman")):
+        # check not
+        if not bool(rospy.get_param("~usekalman")):
             pub.publish("lat: {}; lon: {}; klat: {}; klon: {}; velocity: {}".format(gps.lat_dec, gps.lon_dec, gps.lat_dec, gps.lon_dec, gps.velocity))
         else:
             pub.publish("lat: {}; lon: {}; klat: {}; klon: {}; velocity: {}".format(gps.lat_dec, gps.lon_dec, x_now[0], x_now[2], gps.velocity))
@@ -108,10 +109,10 @@ if __name__ == '__main__':
         gps_init_filename = rospy.get_param('~gpsvals')
         need_display = bool(rospy.get_param('~need_display'))
 
-        rospy.loginfo("GPS kalman filtering initialization started")
+        #rospy.loginfo("GPS kalman filtering initialization started")
         #save_init_data(5)
-        rospy.loginfo("GPS kalman filtering initialization finished")
-        rospy.loginfo("GPS kalman filtering started")
+        #rospy.loginfo("GPS kalman filtering initialization finished")
+        #rospy.loginfo("GPS kalman filtering started")
         gps_pos_publisher = rospy.Publisher('gpspos', String, queue_size=10)
 
         # uncomment for real GPS data

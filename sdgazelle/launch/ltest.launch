@@ -1,10 +1,10 @@
 <launch>
 
-  <arg name="os1_hostname" default="192.168.1.79" doc="hostname or IP in dotted decimal form of the sensor"/>
+  <arg name="os1_hostname" default="192.168.1.54" doc="hostname or IP in dotted decimal form of the sensor"/>
   <arg name="os1_udp_dest" default="192.168.1.38" doc="hostname or IP where the sensor will send data packets"/>
   <arg name="os1_lidar_port" default="7502" doc="port to which the sensor should send lidar data"/>
   <arg name="os1_imu_port" default="7503" doc="port to which the sensor should send imu data"/>
-  <arg name="replay" default="true" doc="do not connect to a sensor; expect /os1_node/{lidar,imu}_packets from replay"/>
+  <arg name="replay" default="false" doc="do not connect to a sensor; expect /os1_node/{lidar,imu}_packets from replay"/>
   <arg name="lidar_mode" default="1024x10" doc="resolution and rate: either 512x10, 512x20, 1024x10, 1024x20, or 2048x10"/>
   <arg name="metadata" default="/home/nvidia/.ros/10.3.23.82.json" doc="override default metadata file for replays"/>
   <arg name="viz" default="false" doc="whether to run a simple visualizer"/>
