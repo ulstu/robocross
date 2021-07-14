@@ -187,7 +187,10 @@ class CarPositionController(object):
             prev_alpha = 0
             while not rospy.is_shutdown():
                 self.calc_distances()
-                alpha = self.calc_angle([self.pos["klat"], self.pos["klon"]], self.points[len(self.points) - 2], self.points[len(self.points) - 1])
+                try:
+                    alpha = self.calc_angle([self.pos["klat"], self.pos["klon"]], self.points[-2], self.points[-1])
+                except:
+                    reopy.loginfo("calc angle error")
                 # условие требует проверки
                 if ((prev_stop_dist < self.dist_before_stop or (prev_alpha < 90 and alpha >= 90)) and (prev_stop_dist < 20)) or (self.dist_before_stop < 2):
                     self.cur_state = CarState.STOP
@@ -205,6 +208,9 @@ class CarPositionController(object):
         '''
         Выполнение разворота
         '''
+
+        self.turnpub.publish("5 0")
+
         log(self, "Начало выполнения разворота")
         self.publish_state("turn")
 
@@ -281,6 +287,7 @@ class CarPositionController(object):
         rospy.Subscriber("gpspos", String, self.getpos_callback)
         self.distpub = rospy.Publisher('distances', String, queue_size=10)
         self.controlpub = rospy.Publisher('carcmd', String, queue_size=10)
+        self.turnpub = rospy.Publisher('serialcode', String, queue_size=10)
         rospy.Subscriber("completetask", String, self.cmpl_cmd_callback)
         self.load_data()
         for i in range(3):

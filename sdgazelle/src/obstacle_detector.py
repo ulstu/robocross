@@ -3,7 +3,6 @@
 import rospy
 import time
 import roslib
-import math
 import sys
 import numpy as np
 import cv2
@@ -12,12 +11,14 @@ from sensor_msgs.msg import Image
 #from cv_bridge import CvBridge, CvBridgeError
 
 
-class PathDetector:
+class ObstacleDetector:
     def __init__(self):
-        self.angle_pub = rospy.Publisher("serialcode", String, queue_size=1)
+        self.angle_pub = rospy.Publisher("angle", String, queue_size=1)
 #        self.angle_pub = rospy.Publisher("angle", std_msgs.msg.String, queue_size=5)
         self.image_pub = rospy.Publisher("image_topic_2", Image, queue_size=5)
+        self.blockpub = rospy.Publisher('blockdetect', String, queue_size=10)
 
+        #self.bridge = CvBridge()
         time.sleep(10)
         self.image_sub = rospy.Subscriber("/img_node/range_image", Image, self.image_callback)
         self.pos_history = []
@@ -38,18 +39,22 @@ class PathDetector:
         # resize image
         #cv_image = cv2.resize(cv_image, dim, interpolation=cv2.INTER_AREA)
 
-        window_size = 190
+        window_size = 120
         imin = 0
         stride = 1
         padding = 500
-        np_img = cv_image[6:9, padding:-padding,:].copy()
-        np_img[np_img < 150] = 0
-
-        img_height = 66
+        #cv_image[cv_image < 80] = 0
+        np_shift_img = cv_image.copy()
+        np_img = np_shift_img[1:, :, :] - cv_image[:-1, :, :]
+        
+        np_img = np_img[:,padding:-padding,:]
+        np_img[np_img >= 3] = 255
+        np_img[np_img < 3] = 0
+        np_img = 255 - np_img
+        img_height = 120
         new_img = np.empty((img_height, np_img.shape[1], np_img.shape[2]), dtype=np.uint8)
         for i in range(img_height):
             r = int(i / int(img_height / np_img.shape[0]))
-            #print(np_img.shape[0])
             #print(new_img[i, :, :].shape, np_img[r, :, :].shape)
             new_img[i, :, :] = np_img[r, :, :]
         np_img = new_img
@@ -58,15 +63,9 @@ class PathDetector:
         for i in range(0, np_img.shape[1] - window_size, stride):
             window = np_img[:, i : i + window_size,:]
             s = np.sum(window)
-            if s <= minw or (abs(imin - i) < 10 and abs(s - minw) < 1000):
+            if s <= minw:
                 minw = s
                 imin = i
-        #print(imin + window_size / 2, int(cols / 2))
-        if (imin + window_size / 2 > int(cols / 2)):
-            imin -= 50
-       # else:
-       #     imin += 50
-        #print(window_dict)
         #rospy.loginfo(f'window size: {minw}')
 
         #if len(self.pos_history) > 0 and abs(imin - self.pos_history[-1]) > 20:
@@ -80,15 +79,12 @@ class PathDetector:
         
         cv2.rectangle(np_img, (imin, 0), (imin + window_size, rows), (0, 255, 0), 2)
         cv2.line(np_img, (imin + int(window_size / 2), 0), (int(cols / 2), img_height), (255, 0, 0), 3)
-        angle = int(np.arctan(((imin + int(window_size / 2) - cols / 2) / img_height))  * 90)
-        
-        angle =  angle ** 2 / 75 * (-1 if angle < 0 else 1)
-        #print(f'angle: {angle}')
-        #if (angle > 0):
-        #    angle = angle - 15
-        #else:
-        #    angle = angle + 15   
-        self.angle_pub.publish("16 " + str(angle * 12))
+        angle = int(np.arctan(((imin + int(window_size / 2) - cols / 2) / 16))  * 90)
+        if angle > 0:
+            angle -= 10
+        else:
+            angle += 10
+        self.angle_pub.publish(str(angle))
         cv2.imshow("Image window", np_img)
         cv2.waitKey(3)
 
@@ -101,7 +97,7 @@ class PathDetector:
 if __name__ == '__main__':
     try:
         rospy.init_node('image_obstacle_detection', anonymous=True)
-        detector = PathDetector()
+        detector = ObstacleDetector()
         
         try:
             rospy.spin()

@@ -12,7 +12,7 @@ def get_code(code, value):
     left_piece = ((code + 32) << 2) + ((value >> 14) & 3)
     midle_piece = (value >> 7) & 127
     right_piece = value & 127
-    print(str(left_piece)+ " " + str(midle_piece) + " " + str(right_piece))
+    #print(str(left_piece)+ " " + str(midle_piece) + " " + str(right_piece))
     return bytearray([left_piece, midle_piece, right_piece])
 
 class Car(object):
@@ -30,9 +30,9 @@ class Car(object):
     }
     
 
-    def update_angle(self, data):
-        rospy.loginfo(int(data.data))
-        Serial.write(get_code(16, int(data.data) * 3))
+    def send_data(self, data):
+        #rospy.loginfo(f'value {int(float(data.data))}')
+        Serial.write(get_code(int(data.data.split()[0]), int(float(data.data.split()[1]))))
 
     def read_obd(self):
         '''
@@ -127,27 +127,27 @@ class Car(object):
                     # смена передачи
 
             # установка скорости 
-            if (CarCmdParams.velocity in self.cur_cmd) and self.cur_cmd[CarCmdParams.velocity] != 0:
-                while (self.actual_params[CarCmdParams.velocity] < self.cur_cmd[CarCmdParams.velocity]) and not rospy.get_param("~simulation"):
-                    if (self.actual_params[CarCmdParams.transmission] != 0):
-                        if self.actual_params[CarCmdParams.rpm] > self.check_params[CarCmdParams.rpm][1]: 
-                            break
+            #if (CarCmdParams.velocity in self.cur_cmd) and self.cur_cmd[CarCmdParams.velocity] != 0:
+                #while (self.actual_params[CarCmdParams.velocity] < self.cur_cmd[CarCmdParams.velocity]) and not rospy.get_param("~simulation"):
+                #    if (self.actual_params[CarCmdParams.transmission] != 0):
+                #        if self.actual_params[CarCmdParams.rpm] > self.check_params[CarCmdParams.rpm][1]: 
+                #            break
                         # увеличить значение на педали газа на определенный шаг
-                        log(self, "Увеличение скорости. Текущая: {}; Целевая: {}".format(self.actual_params[CarCmdParams.velocity], self.cur_cmd[CarCmdParams.velocity]))
-                        rospy.sleep(0.2)
-                    else:
-                        rospy.logerr("Попытка увеличить скорость {} без включенной передачи".format(self.cur_cmd[CarCmdParams.velocity]))
-                        break
-                while (self.actual_params[CarCmdParams.velocity] > self.cur_cmd[CarCmdParams.velocity]) and not rospy.get_param("~simulation"):
-                    if (self.actual_params[CarCmdParams.transmission] != 0):
-                        if self.actual_params[CarCmdParams.rpm] < self.check_params[CarCmdParams.rpm][0]: 
-                            break
+                        #log(self, "Увеличение скорости. Текущая: {}; Целевая: {}".format(self.actual_params[CarCmdParams.velocity], self.cur_cmd[CarCmdParams.velocity]))
+                #       rospy.sleep(0.2)
+                #    else:
+                #        rospy.logerr("Попытка увеличить скорость {} без включенной передачи".format(self.cur_cmd[CarCmdParams.velocity]))
+                #        break
+                #while (self.actual_params[CarCmdParams.velocity] > self.cur_cmd[CarCmdParams.velocity]) and not rospy.get_param("~simulation"):
+                #    if (self.actual_params[CarCmdParams.transmission] != 0):
+                #        if self.actual_params[CarCmdParams.rpm] < self.check_params[CarCmdParams.rpm][0]: 
+                #            break
                         # уменьшить значение на педали газа
-                        log(self, "Уменьшение скорости. Текущая: {}; Целевая: {}".format(self.actual_params[CarCmdParams.velocity], self.cur_cmd[CarCmdParams.velocity]))
-                        rospy.sleep(0.2)
-                    else:
-                        rospy.logerr("Попытка уменьшить скорость {} без включенной передачи".format(self.cur_cmd[CarCmdParams.velocity]))
-                        break
+                #        log(self, "Уменьшение скорости. Текущая: {}; Целевая: {}".format(self.actual_params[CarCmdParams.velocity], self.cur_cmd[CarCmdParams.velocity]))
+                #        rospy.sleep(0.2)
+                #    else:
+                #        rospy.logerr("Попытка уменьшить скорость {} без включенной передачи".format(self.cur_cmd[CarCmdParams.velocity]))
+                #        break
         except:
             rospy.logerr('Ошибка car control: {}'.format(traceback.format_exc()))
 
@@ -231,7 +231,7 @@ class Car(object):
             self.obd_connection = obd.OBD(rospy.get_param("~obdport"))  # auto-connects to USB or RF port
         rospy.Subscriber("carcmd", String, self.cmd_callback)
         rospy.Subscriber("carcontrol", String, self.control_callback)
-        rospy.Subscriber("angle", String, self.update_angle)
+        rospy.Subscriber("serialcode", String, self.send_data)
         self.statepub = rospy.Publisher('carstate', String, queue_size=10)
         self.init_car()
         self.start()

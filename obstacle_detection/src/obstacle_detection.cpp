@@ -158,19 +158,19 @@ void pointCloudCb(const sensor_msgs::PointCloud2ConstPtr &in_cloud_ptr)
   pass.filter(*floorRemoved);
 
   sensor_msgs::PointCloud2 pub_pc;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
-  filterGround(floorRemoved, cloud_filtered);
+  //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
+  //filterGround(floorRemoved, cloud_filtered);
 
   //pcl::toROSMsg(*noiseRemoved, pub_pc);
-  // pcl::toROSMsg(*floorRemoved, pub_pc);
+  pcl::toROSMsg(*floorRemoved, pub_pc);
 
-  pcl::toROSMsg(*cloud_filtered, pub_pc);
+  //pcl::toROSMsg(*cloud_filtered, pub_pc);
   pub_pc.header = in_cloud_ptr->header;
   pub_pc.header.stamp = ros::Time::now();
   pcl_pub.publish(pub_pc);
 
   // clusterPoints(cloud_filtered);
-  clusterPoints(floorRemoved);
+  //clusterPoints(floorRemoved);
 }
 
 int main(int argc, char **argv)
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
   ROS_INFO_STREAM("ground_min: " << ground_min << "; ground_max: " << ground_max);
 
   // Create a ROS subscriber for the input point cloud
-  ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2>("/os1_cloud_node/points", 1, pointCloudCb);
+  ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2>("/os_cloud_node/points", 1, pointCloudCb);
 
   // Publishers
   pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("keypoints", 1);

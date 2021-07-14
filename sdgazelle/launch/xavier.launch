@@ -41,4 +41,5 @@
     <node pkg="sdgazelle" name="stereorecognizer" type="stereorecognizer.py" output="screen">
     </node>
     <include file="$(find sdgazelle)/launch/os1_obst.launch" />
+    <!-- <include file="$(find obstacle_detection)/launch/obstacle_detection.launch" /> -->
 </launch>
