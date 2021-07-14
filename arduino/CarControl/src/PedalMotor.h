@@ -7,6 +7,7 @@ private:
     int min, max;
     int targetPosition;
     bool inversed;
+    bool fast = false;
 
 public:
 
@@ -27,7 +28,12 @@ public:
     }
 
     void set(int position) {
-    	targetPosition = position * (max / 255.0);
+    	if (position == -1) {
+    		fast = true;
+    	} else {
+    		fast = false;
+    	}
+    	targetPosition = abs(position) * (max / 255.0);
     	if (targetPosition > max) {
     		targetPosition = max;
     	}
@@ -57,11 +63,9 @@ public:
         		speed = 0;
         	}
         }
-        else if ((currentPosition > targetPosition) && (currentPosition < (0.83 * max))&&(currentPosition > (0.01 * max))) {
+        else if ((currentPosition > targetPosition) && (currentPosition < (0.83 * max)) && (currentPosition > (0.01 * max)) && fast == false) {
         	speed *= 0.06;
         }
-        //Serial.println(speed);
-        //Serial.println(currentPosition);
         analogWrite(pwmPin, speed);
     }
 
