@@ -63,7 +63,7 @@ public:
         		speed = 0;
         	}
         }
-        else if ((currentPosition > targetPosition) && (currentPosition < (0.83 * max)) && (currentPosition > (0.01 * max)) && fast == false) {
+        else if ((currentPosition > targetPosition) && (currentPosition < (0.92 * max)) && (currentPosition > (0.01 * max)) && fast == false) {
         	speed *= 0.06;
         }
         analogWrite(pwmPin, speed);
