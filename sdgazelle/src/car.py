@@ -28,11 +28,21 @@ class Car(object):
         CarCmdParams.velocity: [0, 15],
         CarCmdParams.wheel: [-720, 720],
     }
+    is_turning = False
     
 
     def send_data(self, data):
-        #rospy.loginfo(f'value {int(float(data.data))}')
-        Serial.write(get_code(int(data.data.split()[0]), int(float(data.data.split()[1]))))
+        
+        while Serial.in_waiting:
+            self.starter.publish("ready")
+            Serial.reset_input_buffer()
+        
+        if int(data.data.split()[0]) == 5:
+            self.is_turning = True
+        if self.is_turning and int(data.data.split()[0]) != 16:
+            Serial.write(get_code(int(data.data.split()[0]), int(float(data.data.split()[1]))))
+        elif int(data.data.split()[0]) != 6:
+            Serial.write(get_code(int(data.data.split()[0]), int(float(data.data.split()[1]))))
 
     def read_obd(self):
         '''
@@ -233,6 +243,7 @@ class Car(object):
         rospy.Subscriber("carcontrol", String, self.control_callback)
         rospy.Subscriber("serialcode", String, self.send_data)
         self.statepub = rospy.Publisher('carstate', String, queue_size=10)
+        self.starter = rospy.Publisher('ready', String, queue_size=10)
         self.init_car()
         self.start()
 

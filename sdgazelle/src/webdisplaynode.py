@@ -52,11 +52,14 @@ class MapServer(object):
                 self.cmd = clear_str(keyval[1])
 
     def getcarstate_callback(self, data):
-        data = str(data).replace("data:", "")
-        vars = str(data).split(';')
-        for v in vars:
-            keyval = v.split(':')
-            self.carstate[clear_str(keyval[0])] = clear_str(keyval[1])
+        try:
+            data = str(data).replace("data:", "")
+            vars = str(data).split(';')
+            for v in vars:
+                keyval = v.split(':')
+                self.carstate[clear_str(keyval[0])] = clear_str(keyval[1])
+        except:
+            print('web error')
 
     @cherrypy.expose
     def index(self):

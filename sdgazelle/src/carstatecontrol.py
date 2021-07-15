@@ -209,7 +209,7 @@ class CarPositionController(object):
         Выполнение разворота
         '''
 
-        self.turnpub.publish("5 0")
+        self.carstate.publish("turn")
 
         log(self, "Начало выполнения разворота")
         self.publish_state("turn")
@@ -218,6 +218,8 @@ class CarPositionController(object):
         '''
         Остановка автомобиля
         '''
+        self.carstate.publish("stop")
+        
         log(self, 'Автомобиль выполнил остановку')
         self.cur_state = CarState.FINISHED
 
@@ -235,6 +237,7 @@ class CarPositionController(object):
 
     def control_state(self):
         turn_wait = True
+        stop_wait = True
         while not rospy.is_shutdown():
             if self.cur_state == CarState.INIT:
                 self.init_car()
@@ -249,7 +252,9 @@ class CarPositionController(object):
                     self.turn_car()
                     turn_wait = False
             elif self.cur_state == CarState.STOP:
-                self.stop_car()
+                if stop_wait:
+                    self.stop_car()
+                    stop_wait = False
             elif self.cur_state == CarState.FINISHED:
                 self.finish_way_car()
             else:
@@ -288,6 +293,7 @@ class CarPositionController(object):
         self.distpub = rospy.Publisher('distances', String, queue_size=10)
         self.controlpub = rospy.Publisher('carcmd', String, queue_size=10)
         self.turnpub = rospy.Publisher('serialcode', String, queue_size=10)
+        self.carstate = rospy.Publisher('carstate', String, queue_size=10)
         rospy.Subscriber("completetask", String, self.cmpl_cmd_callback)
         self.load_data()
         for i in range(3):
