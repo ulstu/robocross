@@ -73,7 +73,7 @@ class PathDetector:
         minw = (255 * img_height * window_size)
         np_img[np_img < minval] = 0
         for i in range(0, np_img.shape[1] - window_size, stride):
-            window = np_img[:, i : i + window_size,:]
+            window = np_img[:1, i : i + window_size,:]
             s = np.sum(window)
             if (is_near and s < minw) or (not is_near and s <= minw):# or  (abs(imin - i) < 10 and abs(s - minw) < 1000):
                 minw = s
