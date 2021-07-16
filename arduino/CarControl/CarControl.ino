@@ -262,7 +262,7 @@ void loop() {
                   clutch_motor.set(cluthWork);
                 }
                 brake_motor.set(0);
-                if (lidarDist < 190) {
+                if (lidarDist < 192) {
                     return_state++;
                     return_timer = millis();
                 }
